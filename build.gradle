@@ -1,0 +1,43 @@
+group 'ru.training.javalab'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven { url 'http://repo.spring.io/libs-milestone' }
+    maven { url 'http://repo.spring.io/libs-release' }
+    mavenCentral()
+}
+
+configurations {
+    testCompile.extendsFrom compileOnly
+}
+
+// this turns logging on in tests:
+test.testLogging.showStandardStreams = true
+
+dependencies {
+    compile 'org.springframework:spring-context:+',
+
+            // Common
+            'org.apache.logging.log4j:log4j-core:+',
+            'io.vavr:vavr:+',
+            'org.codehaus.groovy:groovy-all:+',
+            'com.aol.simplereact:cyclops-react:+'
+
+    compileOnly 'org.apache.tomcat:tomcat-api:+',
+//            'org.apache.tomcat:tomcat-jsp-api:+',
+            'org.projectlombok:lombok:+',
+            'edu.washington.cs.types.checker:checker-framework:+'
+
+    testCompile 'org.junit.jupiter:junit-jupiter-api:+',
+            'org.hamcrest:java-hamcrest:+',
+            'org.springframework:spring-test:+'
+}
+
+task Wrapper(type: Wrapper) {
+    gradleVersion = '4.0.1'
+    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
