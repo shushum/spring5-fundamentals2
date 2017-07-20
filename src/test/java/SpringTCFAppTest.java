@@ -1,5 +1,4 @@
 import lab.model.Person;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +14,10 @@ class SpringTCFAppTest {
 	@Autowired
 	private Person person;
 
-	private Person expectedPerson;
-	
-
-	@BeforeEach
-	void setUp() throws Exception {
-		expectedPerson = SimpleAppTest.getExpectedPerson();
-	}
+	private Person expectedPerson = HelloWorldTest.getExpectedPerson();
 
 	@Test
 	void testInitPerson() {
 		assertEquals(expectedPerson, person);
-		System.out.println(person);
 	}
 }
