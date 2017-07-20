@@ -1,10 +1,14 @@
 package lab.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@EqualsAndHashCode(exclude = "id")
 public class UsualPerson implements Person {
     private int id;
     private String name;
