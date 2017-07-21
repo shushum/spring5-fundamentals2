@@ -21,6 +21,11 @@ test.testLogging.showStandardStreams = true
 dependencies {
     compile 'org.springframework:spring-context:+',
 
+            // AOP
+            'org.aspectj:aspectjrt:+',
+            'org.aspectj:aspectjweaver:+',
+            'aopalliance:aopalliance:+',
+
             // Common
             'org.apache.logging.log4j:log4j-core:+'//,
 //            'io.vavr:vavr:+',
