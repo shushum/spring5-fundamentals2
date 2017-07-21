@@ -5,19 +5,23 @@ import lombok.Value;
 
 import java.util.List;
 
+//@Component("person")
 @Value
 @EqualsAndHashCode(exclude = "id")
+//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UsualPerson implements Person {
     private int id;
-    private String name;
+    private String firstName;
+    private String lastName;
     private Country country;
     private int age;
     private float height;
     private boolean isProgrammer;
-    private List<String> contacts;
+    private boolean broke;
+    private List<Contact> contacts;
 
     @Override
-    public void sayHello(Person person) {
-        System.out.printf("Hello, %s, I`m %s%n", person.getName(), name);
+    public String sayHello(Person person) {
+        return String.format("Hello, %s, I`m %s%n", person.getName(), getName());
     }
 }
