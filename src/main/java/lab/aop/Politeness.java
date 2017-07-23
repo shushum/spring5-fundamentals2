@@ -7,16 +7,16 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Aspect
+@Order(0)
 @Component
-@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class Politeness {
 
     @Pointcut("execution(* sellSquishee(..))")
-    private void sellSquishee() {
-        throw new UnsupportedOperationException();
+    void sellSquishee() {
     }
 
     @Before("sellSquishee()")

@@ -10,10 +10,9 @@ import static java.lang.String.format;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public interface Contact {
+
     long getId();
-
     Type getType();
-
     String getValue();
 
     enum Type {

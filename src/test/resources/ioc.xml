@@ -10,7 +10,7 @@
 
     <import resource="application-context.xml"/>
 
-    <bean id="id" class="java.lang.Integer" c:value="1"/>
+    <bean id="id" class="java.lang.Long" c:value="1"/>
 
     <bean id="firstName" class="java.lang.String" c:_0="John"/>
     <bean id="lastName" class="java.lang.String" c:_0="Smith"/>

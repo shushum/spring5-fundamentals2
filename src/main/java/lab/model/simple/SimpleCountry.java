@@ -14,7 +14,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(exclude = "id")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SimpleCountry implements Country, Serializable {
-	private int id;
+	private long id;
     private String name;
     private String codeName;
 }

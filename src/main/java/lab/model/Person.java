@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Person {
 
-    int getId();
+    long getId();
     String getFirstName();
     String getLastName();
     Country getCountry();

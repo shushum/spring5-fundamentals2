@@ -13,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode(exclude = "id")
 //@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UsualPerson implements Person {
-    private int id;
+    private long id;
     private String firstName;
     private String lastName;
     private Country country;
