@@ -1,5 +1,8 @@
-package lab.model;
+package lab.model.simple;
 
+import lab.model.Contact;
+import lab.model.Country;
+import lab.model.Person;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
@@ -19,9 +22,4 @@ public class UsualPerson implements Person {
     private boolean isProgrammer;
     private boolean broke;
     private List<Contact> contacts;
-
-    @Override
-    public String sayHello(Person person) {
-        return String.format("Hello, %s, I`m %s%n", person.getName(), getName());
-    }
 }

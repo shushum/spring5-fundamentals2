@@ -17,26 +17,27 @@
     <bean id="age" class="java.lang.Integer" c:value="35"/>
     <bean id="isProgrammer" class="java.lang.Boolean" c:value="true"/>
     <bean id="height" class="java.lang.Float" c:value="1.78"/>
+    <bean id="broke" class="java.lang.Boolean" c:value="false"/>
 
-    <util:list id="contacts" value-type="lab.model.SimpleContact">
-        <bean class="lab.model.SimpleContact" p:type="EMAIL" p:value="asd@asd.ru"/>
-        <bean class="lab.model.SimpleContact" p:type="TELEPHONE" p:value="+55 11 99999-5555"/>
+    <util:list id="contacts" value-type="lab.model.simple.SimpleContact">
+        <bean class="lab.model.simple.SimpleContact" p:type="EMAIL" p:value="asd@asd.ru"/>
+        <bean class="lab.model.simple.SimpleContact" p:type="TELEPHONE" p:value="+55 11 99999-5555"/>
     </util:list>
 
-    <bean id="person" class="lab.model.UsualPerson"
+    <bean id="person" class="lab.model.simple.UsualPerson"
           c:id-ref="id"
           c:firstName-ref="firstName"
           c:lastName-ref="lastName"
           c:age-ref="age"
           c:isProgrammer-ref="isProgrammer"
           c:height-ref="height"
+          c:broke-ref="broke"
           c:contacts-ref="contacts"
-          c:country-ref="country"
-          c:broke="true"/>
+          c:country-ref="country"/>
 
     <bean id="name" class="java.lang.String" c:_0="Russia"/>
     <bean id="codeName" class="java.lang.String" c:_0="RU"/>
-    <!--<bean id="country" class="lab.model.SimpleCountry"-->
+    <!--<bean id="country" class="lab.model.simple.SimpleCountry"-->
         <!--c:id-ref="id"-->
         <!--c:name-ref="name"-->
         <!--c:codeName-ref="codeName"/>-->

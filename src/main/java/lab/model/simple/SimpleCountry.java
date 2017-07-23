@@ -1,5 +1,6 @@
-package lab.model;
+package lab.model.simple;
 
+import lab.model.Country;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

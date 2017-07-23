@@ -1,38 +1,50 @@
 package lab.aop;
 
 import lab.model.Person;
+import lombok.AllArgsConstructor;
+import lombok.val;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Aspect
+@Component
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class Politeness {
 
-    @Before("execution(* sellSquishee(..))")
-    public void sayHello(JoinPoint joinPiont) {
-        AopLog.append("Hello " + ((Person) joinPiont.getArgs()[0]).getName() + ". How are you doing? \n");
+    @Pointcut("execution(* sellSquishee(..))")
+    private void sellSquishee() {
+        throw new UnsupportedOperationException();
     }
 
-    @AfterReturning(pointcut = "execution(* sellSquishee(..))",
-            returning = "retVal", argNames = "retVal")
+    @Before("sellSquishee()")
+    public void sayHello(JoinPoint joinPoint) {
+        System.out.printf("Hello %s. How are you doing?%n",
+                ((Person) joinPoint.getArgs()[0]).getName());
+    }
+
+    @AfterReturning(pointcut = "sellSquishee()", returning = "retVal", argNames = "retVal")
     public void askOpinion(Object retVal) {
-        AopLog.append("Is " + ((Squishee) retVal).getName() + " Good Enough? \n");
+        System.out.printf("Is %s Good Enough?%n", ((lab.model.Squishee) retVal).getName());
     }
 
+    @AfterThrowing("sellSquishee()")
     public void sayYouAreNotAllowed() {
-        AopLog.append("Hmmm... \n");
+        System.out.println("Hmmm...");
     }
 
+    @After("sellSquishee()")
     public void sayGoodBye() {
-        AopLog.append("Good Bye! \n");
+        System.out.println("Good Bye!");
     }
 
+    @Around("sellSquishee()")
     public Object sayPoliteWordsAndSell(ProceedingJoinPoint pjp) throws Throwable {
-        AopLog.append("Hi! \n");
-        Object retVal = pjp.proceed();
-        AopLog.append("See you! \n");
+        System.out.println("Hi!");
+        val retVal = pjp.proceed();
+        System.out.println("See you!");
         return retVal;
     }
 

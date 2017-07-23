@@ -2,8 +2,8 @@ package ioc;
 
 import lab.model.Contact;
 import lab.model.Person;
-import lab.model.SimpleCountry;
-import lab.model.UsualPerson;
+import lab.model.simple.SimpleCountry;
+import lab.model.simple.UsualPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanFactory;
@@ -49,7 +49,7 @@ class HelloWorldTest {
                 35,
                 1.78F,
                 true,
-                true,
+                false,
                 contacts);
     }
 }

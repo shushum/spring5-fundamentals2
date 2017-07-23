@@ -1,5 +1,7 @@
 package lab.model;
 
+import lab.model.simple.SimpleContact;
+
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Pattern;

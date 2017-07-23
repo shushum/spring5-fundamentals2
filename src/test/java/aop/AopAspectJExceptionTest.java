@@ -1,9 +1,11 @@
 package aop;
 
-import lab.aop.AopLog;
-import lab.aop.Bar;
-import lab.aop.CustomerBrokenException;
+import lab.model.Bar;
+import lab.model.CustomerBrokenException;
 import lab.model.Person;
+import lab.model.simple.UsualPerson;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.lang.reflect.Field;
+
+import static aop.TestUtils.fromSystemOut;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
@@ -18,23 +23,34 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 @ContextConfiguration("classpath:aop.xml")
 class AopAspectJExceptionTest {
 
-	@Autowired
-	private Bar bar;
-    
-	@Autowired
+    @Autowired
+    private Bar bar;
+
+    @Autowired
     private Person person;
 
+    private Field broke;
+
     @BeforeEach
+    @SneakyThrows
     void setUp() throws Exception {
-//        person.setBroke(true);
+        broke = UsualPerson.class.getDeclaredField("broke");
+        broke.setAccessible(true);
+        broke.set(person, true);
+    }
+
+    @AfterEach
+    @SneakyThrows
+    void tearDown() {
+        broke.set(person, false);
     }
 
     @Test
     void testAfterThrowingAdvice() {
- 
-    	assertThrows(CustomerBrokenException.class, () -> bar.sellSquishee(person));
+        String fromOut = fromSystemOut(() ->
+                assertThrows(CustomerBrokenException.class, () -> bar.sellSquishee(person)));
 
-        assertTrue("Customer is not broken ", AopLog.getStringValue().contains("Hmmm..."));
-        System.out.println(AopLog.getStringValue());
+        //noinspection SpellCheckingInspection
+        assertTrue("Customer is not broken ", fromOut.contains("Hmmm..."));
     }
 }

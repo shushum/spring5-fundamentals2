@@ -3,7 +3,6 @@ package lab.model;
 import java.util.List;
 
 public interface Person {
-    String sayHello(Person person);
 
     int getId();
     String getFirstName();
@@ -17,5 +16,9 @@ public interface Person {
 
     default String getName() {
         return String.format("%s %s", getFirstName(), getLastName());
+    }
+
+    default String sayHello(Person person) {
+        return String.format("Hello, %s, I`m %s%n", person.getName(), getName());
     }
 }
