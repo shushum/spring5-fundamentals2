@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HelloWorldTest {
 
-    private static final String APPLICATION_CONTEXT_XML_FILE_NAME = "application-context.xml";
+    private static final String APPLICATION_CONTEXT_XML_FILE_NAME = "ioc.xml";
 
     private Person expectedPerson = SimpleAppTest.getExpectedPerson();
 

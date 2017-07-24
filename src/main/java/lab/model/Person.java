@@ -22,4 +22,6 @@ public interface Person {
     default String getName() {
         return String.format("%s %s", getFirstName(), getLastName());
     }
+
+    void setBroke(boolean isBroken);
 }

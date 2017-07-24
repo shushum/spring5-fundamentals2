@@ -1,13 +1,15 @@
 package lab.model;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.Getter;
 
 import java.util.List;
 
 //@Component("person")
-@Value
+@Getter
 @EqualsAndHashCode(exclude = "id")
+@AllArgsConstructor
 //@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UsualPerson implements Person {
     private int id;
@@ -23,5 +25,10 @@ public class UsualPerson implements Person {
     @Override
     public String sayHello(Person person) {
         return String.format("Hello, %s, I`m %s%n", person.getName(), getName());
+    }
+
+    @Override
+    public void setBroke(boolean isBroken) {
+        this.broke = isBroken;
     }
 }
