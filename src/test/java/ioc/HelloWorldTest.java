@@ -42,10 +42,9 @@ class HelloWorldTest {
             contacts.add(from);
         }
         return new UsualPerson(
-                1,
                 "John",
                 "Smith",
-                new SimpleCountry(1, "Russia","RU"),
+                new SimpleCountry("Russia","RU"),
                 35,
                 1.78F,
                 true,

@@ -2,13 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:c="http://www.springframework.org/schema/c"
-       xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <import resource="application-context.xml"/>
-
-    <!--for all-->
-    <bean id="id" class="java.lang.Long" c:value="1"/>
 
     <!--for Person-->
     <bean id="firstName" class="java.lang.String" c:_0="John"/>
@@ -18,8 +14,9 @@
     <bean id="height" class="java.lang.Float" c:value="1.78"/>
     <bean id="broke" class="java.lang.Boolean" c:value="false"/>
 
-    <bean class="lab.model.simple.SimpleContact" p:type="EMAIL" p:value="asd@asd.ru"/>
-    <bean class="lab.model.simple.SimpleContact" p:type="TELEPHONE" p:value="+55 11 99999-5555"/>
+    <!--for Person.contacts-->
+    <bean class="lab.model.simple.SimpleContact" c:type="EMAIL" c:value="asd@asd.ru"/>
+    <bean class="lab.model.simple.SimpleContact" c:type="TELEPHONE" c:value="+55 11 99999-5555"/>
 
     <!--for country-->
     <bean id="name" class="java.lang.String" c:_0="Russia"/>
