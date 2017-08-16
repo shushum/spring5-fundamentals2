@@ -1,7 +1,7 @@
 package aop;
 
-import lab.model.simple.ApuBar;
-import lab.model.Bar;
+import lab.service.simple.ApuBar;
+import lab.service.Bar;
 import lab.model.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

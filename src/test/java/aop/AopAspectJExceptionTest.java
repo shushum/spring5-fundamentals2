@@ -1,9 +1,9 @@
 package aop;
 
-import lab.model.Bar;
-import lab.model.CustomerBrokenException;
+import lab.service.Bar;
+import lab.service.CustomerBrokenException;
 import lab.model.Person;
-import lab.model.simple.UsualPerson;
+import lab.model.simple.SimplePerson;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,7 @@ class AopAspectJExceptionTest {
     @BeforeEach
     @SneakyThrows
     void setUp() throws Exception {
-        broke = UsualPerson.class.getDeclaredField("broke");
+        broke = SimplePerson.class.getDeclaredField("broke");
         broke.setAccessible(true);
         broke.set(person, true);
     }

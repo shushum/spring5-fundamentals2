@@ -1,6 +1,6 @@
 package lab.aop;
 
-import lab.model.CustomerBrokenException;
+import lab.service.CustomerBrokenException;
 import lab.model.Person;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

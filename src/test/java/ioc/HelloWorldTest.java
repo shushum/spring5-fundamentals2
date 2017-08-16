@@ -3,8 +3,7 @@ package ioc;
 import lab.model.Contact;
 import lab.model.Person;
 import lab.model.simple.SimpleCountry;
-import lab.model.simple.UsualPerson;
-import org.junit.jupiter.api.BeforeEach;
+import lab.model.simple.SimplePerson;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -18,21 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class HelloWorldTest {
 
     private static final String APPLICATION_CONTEXT_XML_FILE_NAME = "ioc.xml";
-
-    private Person expectedPerson;
-
-    private BeanFactory context;
-
-    @BeforeEach
-    void setUp() throws Exception {
-        context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML_FILE_NAME);
-        expectedPerson = getExpectedPerson();
-    }
+    private BeanFactory context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML_FILE_NAME);
 
     @Test
     void testInitPerson() {
-        assertEquals(expectedPerson, context.getBean("person"));
-//		System.out.println(person);
+        assertEquals(getExpectedPerson(), context.getBean("person"));
     }
 
     static Person getExpectedPerson() {
@@ -41,7 +30,7 @@ class HelloWorldTest {
             Contact from = Contact.from(s);
             contacts.add(from);
         }
-        return new UsualPerson(
+        return new SimplePerson(
                 "John",
                 "Smith",
                 new SimpleCountry("Russia","RU"),
