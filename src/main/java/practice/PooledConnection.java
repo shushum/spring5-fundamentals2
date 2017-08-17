@@ -10,10 +10,26 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@FunctionalInterface
 public interface PooledConnection extends Connection, Supplier<Connection> {
+
+    void free();
+
+    static Connection from(Connection connection, Consumer<Connection> connectionConsumer) {
+        return new PooledConnection() {
+            @Override
+            public void free() {
+                connectionConsumer.accept(this);
+            }
+
+            @Override
+            public Connection get() {
+                return connection;
+            }
+        };
+    }
 
     default void reallyClose() throws SQLException {
         get().close();
@@ -21,20 +37,15 @@ public interface PooledConnection extends Connection, Supplier<Connection> {
 
     @Override
     default void close() throws SQLException {
-        if (get().isClosed()) {
-            throw new SQLException("Attempting to close closed connection.");
-        }
-        if (get().isReadOnly()) {
-            get().setReadOnly(false);
-        }
+        Connection connection = get();
 
-        // TODO: 16/08/2017 разобраться с возвратом в пул
-//        if (!givenAwayConQueue.remove(this)) {
-//            throw new SQLException("Error deleting connection from the given away connections pool.");
-//        }
-//        if (!connectionQueue.offer(this)) {
-//            throw new SQLException("Error allocating connection in the pool.");
-//        }
+        if (connection.isClosed())
+            throw new SQLException("Attempting to close closed connection.");
+
+        if (connection.isReadOnly())
+            connection.setReadOnly(false);
+
+        free();
     }
 
     @Override

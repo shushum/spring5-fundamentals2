@@ -46,8 +46,8 @@ dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-api:+',
             'org.hamcrest:java-hamcrest:+',
             'org.springframework:spring-test:+',
-            'com.github.springtestdbunit:spring-test-dbunit:+',
-            'org.dbunit:dbunit:+'
+            'com.github.springtestdbunit:spring-test-dbunit:+'//,
+//            'org.dbunit:dbunit:+'
 }
 
 task Wrapper(type: Wrapper) {
