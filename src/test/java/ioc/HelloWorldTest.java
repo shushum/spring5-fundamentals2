@@ -33,7 +33,7 @@ class HelloWorldTest {
         return new SimplePerson(
                 "John",
                 "Smith",
-                new SimpleCountry("Russia","RU"),
+                new SimpleCountry(0, "Russia","RU"),
                 35,
                 1.78F,
                 true,

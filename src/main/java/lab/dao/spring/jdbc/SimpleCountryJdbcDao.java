@@ -1,82 +1,78 @@
 package lab.dao.spring.jdbc;
 
-import lab.model.Country;
-import lab.model.simple.SimpleCountry;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
-public class SimpleCountryJdbcDao extends NamedParameterJdbcDaoSupport implements CountryJdbcDao {
+import lab.dao.CountryRowMapper;
+import lab.model.Country;
 
-//    @Override
-    public void save(Country country) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        getJdbcTemplate().update(
-                connection -> {
-                    PreparedStatement ps = connection.prepareStatement(
-                            LOAD_COUNTRIES_SQL, Statement.RETURN_GENERATED_KEYS);
-                    ps.setString(1, country.getName());
-                    ps.setString(2, country.getCodeName());
-                    return ps;
-                },
-                keyHolder);
-//        country.setId(keyHolder.getKey().intValue());
-    }
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-//    @Override
-    public Stream<Country> getAllCountries() {
-        return getJdbcTemplate().query(
-                GET_ALL_COUNTRIES_SQL,
-                COUNTRY_ROW_MAPPER
-        ).stream();
-    }
+public class SimpleCountryJdbcDao extends JdbcDaoSupport implements lab.dao.CountryDao {
+	private static final String LOAD_COUNTRIES_SQL = "insert into country (name, code_name) values ";
 
-    @Override
+	private static final String GET_ALL_COUNTRIES_SQL = "select * from country";
+	private static final String GET_COUNTRIES_BY_NAME_SQL = "select * from country where name like :name";
+	private static final String GET_COUNTRY_BY_NAME_SQL = "select * from country where name = '";
+	private static final String GET_COUNTRY_BY_CODE_NAME_SQL = "select * from country where code_name = '";
+
+	private static final String UPDATE_COUNTRY_NAME_SQL_1 = "update country SET name='";
+	private static final String UPDATE_COUNTRY_NAME_SQL_2 = " where code_name='";
+
+    private static final CountryRowMapper COUNTRY_ROW_MAPPER = new CountryRowMapper();
+
+	@Override
+    public List<Country> getCountryList() {
+		// TODO: implement it
+		return null;
+	}
+
+	@Override
     public List<Country> getCountryListStartWith(String name) {
-        return getNamedParameterJdbcTemplate()
-                .query(
-                        GET_COUNTRIES_BY_NAME_SQL,
-                        new MapSqlParameterSource("name", name + "%"),
-                        COUNTRY_ROW_MAPPER);
-    }
+		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
+				getDataSource());
+		SqlParameterSource sqlParameterSource = new MapSqlParameterSource(
+				"name", name + "%");
+		return namedParameterJdbcTemplate.query(GET_COUNTRIES_BY_NAME_SQL,
+				sqlParameterSource, COUNTRY_ROW_MAPPER);
+	}
 
-    @Override
+	@Override
     public void updateCountryName(String codeName, String newCountryName) {
-        getJdbcTemplate().update(
-                        UPDATE_COUNTRY_NAME_SQL,
-                        newCountryName,
-                        codeName
-        );
-    }
+		// TODO: implement it
+	}
 
-    @Override
-    public Country getCountryByCodeName(String codeName) {
-        return getJdbcTemplate()
-                .queryForObject(GET_COUNTRY_BY_CODE_NAME_SQL, COUNTRY_ROW_MAPPER, codeName);
-    }
-
-//    @Override
-    public Optional<Country> getCountryByName(String name) {
-        try {
-            return Optional.of(
-                    getJdbcTemplate()
-                    .queryForObject(GET_COUNTRY_BY_NAME_SQL, COUNTRY_ROW_MAPPER, name));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Override
+	@Override
     public void loadCountries() {
-        for (String[] strings : COUNTRY_INIT_DATA)
-            save(new SimpleCountry(strings[0], strings[1]));
-    }
+		for (String[] countryData : COUNTRY_INIT_DATA) {
+			String sql = LOAD_COUNTRIES_SQL + "('" + countryData[0] + "', '"
+					+ countryData[1] + "');";
+//			System.out.println(sql);
+			getJdbcTemplate().execute(sql);
+		}
+	}
+
+	@Override
+    public Country getCountryByCodeName(String codeName) {
+		JdbcTemplate jdbcTemplate = getJdbcTemplate();
+
+		String sql = GET_COUNTRY_BY_CODE_NAME_SQL + codeName + "'";
+//		System.out.println(sql);
+
+		return jdbcTemplate.query(sql, COUNTRY_ROW_MAPPER).get(0);
+	}
+
+	@Override
+    public Country getCountryByName(String name) {
+		JdbcTemplate jdbcTemplate = getJdbcTemplate();
+		List<Country> countryList = jdbcTemplate.query(GET_COUNTRY_BY_NAME_SQL
+				+ name + "'", COUNTRY_ROW_MAPPER);
+		if (countryList.isEmpty()) {
+			return null;
+		}
+		return countryList.get(0);
+	}
 }

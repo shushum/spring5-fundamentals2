@@ -1,14 +1,11 @@
 package practice;
 
+import io.vavr.CheckedConsumer;
+import io.vavr.CheckedFunction1;
 import lombok.SneakyThrows;
 
-import java.io.FileInputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface ConnectionPool extends Supplier<Connection>, AutoCloseable {
@@ -19,9 +16,7 @@ public interface ConnectionPool extends Supplier<Connection>, AutoCloseable {
     @SneakyThrows
     static ConnectionPool byProperties(String propertiesFilePath) {
         Properties properties = new Properties();
-        try (FileInputStream fileInputStream = new FileInputStream(propertiesFilePath)) {
-            properties.load(fileInputStream);
-        }
+        properties.load(Properties.class.getResourceAsStream(propertiesFilePath));
 
         Class.forName((String) properties.remove(DB_DRIVER));
         String url = (String) properties.remove(DB_URL);
@@ -29,8 +24,6 @@ public interface ConnectionPool extends Supplier<Connection>, AutoCloseable {
 
         return new ArrayBlockingQueueConnectionPool(poolSize, () -> getConnection(url, properties));
     }
-
-    // getConnection(url, properties)
 
     @Private
     @SneakyThrows
@@ -41,19 +34,100 @@ public interface ConnectionPool extends Supplier<Connection>, AutoCloseable {
         return DriverManager.getConnection(url, properties);
     }
 
-    default <T> T mapConnection(Function<Connection, T> connectionTFunction) {
-        try(Connection connection = get()) {
-            return connectionTFunction.apply(connection);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    @SneakyThrows
+    default <T> T mapConnection(CheckedFunction1<Connection, T> connectionMapper) {
+        try (Connection connection = get()) {
+            return connectionMapper.apply(connection);
         }
     }
 
-    default void withConnection(Consumer<Connection> connectionTFunction) {
-        try(Connection connection = get()) {
-            connectionTFunction.accept(connection);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    @SneakyThrows
+    default void withConnection(CheckedConsumer<Connection> connectionConsumer) {
+        try (Connection connection = get()) {
+            connectionConsumer.accept(connection);
         }
     }
+
+    @SneakyThrows
+    default <T> T mapStatement(CheckedFunction1<Statement, T> statementMapper) {
+        return mapConnection(connection -> {
+            try (Statement statement = connection.createStatement()) {
+                return statementMapper.apply(statement);
+            }
+        });
+    }
+
+    @SneakyThrows
+    default void withStatement(CheckedConsumer<Statement> statementConsumer) {
+        withConnection(connection -> {
+            try (Statement statement = connection.createStatement()) {
+                statementConsumer.accept(statement);
+            }
+        });
+    }
+
+    // TODO: 18/08/2017 execute
+
+    @SneakyThrows
+    default <T> T mapPreparedStatement(String preparedSql,
+                                       CheckedFunction1<PreparedStatement, T> preparedStatementMapper,
+                                       Object... params) {
+        return mapConnection(connection -> {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(preparedSql)) {
+                for (int i = 0; i < params.length; ) {
+                    Object param = params[i++];
+                    preparedStatement.setObject(i, param);
+                }
+                return preparedStatementMapper.apply(preparedStatement);
+            }
+        });
+    }
+
+    @SneakyThrows
+    default void withPreparedStatement(String preparedSql,
+                                       CheckedConsumer<PreparedStatement> preparedStatementConsumer,
+                                       Object... params) {
+        withConnection(connection -> {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(preparedSql)) {
+                for (int i = 0; i < params.length; ) {
+                    Object param = params[i++];
+                    preparedStatement.setObject(i, param);
+                }
+                preparedStatementConsumer.accept(preparedStatement);
+            }
+        });
+    }
+
+    // TODO: 18/08/2017 mapCallableStatement
+
+    // TODO: 18/08/2017 withCallableStatement
+
+    @SneakyThrows
+    default <T> T mapResultSet(String sql,
+                               CheckedFunction1<ResultSet, T> resultSetMapper) {
+        return mapStatement(statement -> {
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                return resultSetMapper.apply(resultSet);
+            }
+        });
+    }
+
+    @SneakyThrows
+    default void withResultSet(String sql,
+                               CheckedConsumer<ResultSet> resultSetConsumer) {
+        withStatement(statement -> {
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                resultSetConsumer.accept(resultSet);
+            }
+        });
+    }
+
+    // TODO: 18/08/2017 mapPreparedResultSet
+
+    // TODO: 18/08/2017 withPreparedResultSet
+
+    // TODO: 18/08/2017 mapCollableResultSet
+
+    // TODO: 18/08/2017 withCollableResultSet
+
 }
