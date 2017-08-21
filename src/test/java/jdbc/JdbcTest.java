@@ -25,9 +25,9 @@ class JdbcTest {
 	@Autowired
 	private CountryDao countryDao;
 	
-    private List<Country> expectedCountryList = new ArrayList<Country>();
-    private List<Country> expectedCountryListStartsWithA = new ArrayList<Country>();
-    private Country countryWithChangedName = new SimpleCountry(1, "Russia", "RU");
+    private List<Country> expectedCountryList = new ArrayList<>();
+    private List<Country> expectedCountryListStartsWithA = new ArrayList<>();
+    private Country countryWithChangedName = new SimpleCountry(8, "Russia", "RU");
 
     @BeforeEach
     void setUp() throws Exception {
@@ -36,25 +36,12 @@ class JdbcTest {
     }
     
     @Test
-    @DirtiesContext
     void testCountryList() {
         List<Country> countryList = countryDao.getCountryList();
         assertNotNull(countryList);
         assertEquals(expectedCountryList.size(), countryList.size());
-        for (int i = 0; i < expectedCountryList.size(); i++) {
+        for (int i = 0; i < expectedCountryList.size(); i++)
             assertEquals(expectedCountryList.get(i), countryList.get(i));
-        }
-    }
-
-    @Test
-    @DirtiesContext
-    void testCountryListStartsWithA() {
-        List<Country> countryList = countryDao.getCountryListStartWith("A");
-        assertNotNull(countryList);
-        assertEquals(expectedCountryListStartsWithA.size(), countryList.size());
-        for (int i = 0; i < expectedCountryListStartsWithA.size(); i++) {
-            assertEquals(expectedCountryListStartsWithA.get(i), countryList.get(i));
-        }
     }
 
     @Test
@@ -64,10 +51,19 @@ class JdbcTest {
         assertEquals(countryWithChangedName, countryDao.getCountryByCodeName("RU"));
     }
 
+    @Test
+    void testCountryListStartsWithA() {
+        List<Country> countryList = countryDao.getCountryListStartWith("A");
+        assertNotNull(countryList);
+        assertEquals(expectedCountryListStartsWithA.size(), countryList.size());
+        for (int i = 0; i < expectedCountryListStartsWithA.size(); i++)
+            assertEquals(expectedCountryListStartsWithA.get(i), countryList.get(i));
+    }
+
     private void initExpectedCountryLists() {
-         for (int i = 0; i < SimpleCountryJdbcDao.COUNTRY_INIT_DATA.length; i++) {
+         for (int i = 0; i < SimpleCountryJdbcDao.COUNTRY_INIT_DATA.length;) {
              String[] countryInitData = SimpleCountryJdbcDao.COUNTRY_INIT_DATA[i];
-             Country country = new SimpleCountry(i, countryInitData[0], countryInitData[1]);
+             Country country = new SimpleCountry(++i, countryInitData[0], countryInitData[1]);
              expectedCountryList.add(country);
              if (country.getName().startsWith("A")) {
                  expectedCountryListStartsWithA.add(country);
