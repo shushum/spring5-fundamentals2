@@ -17,8 +17,8 @@ public class SimpleCountryJdbcDao extends JdbcDaoSupport implements lab.dao.Coun
     private static final String LOAD_COUNTRIES_SQL = "insert into country (name, code_name) values ";
     private static final String GET_ALL_COUNTRIES_SQL = "select * from country";
     private static final String GET_COUNTRIES_BY_NAME_SQL = "select * from country where name like :name";
-    private static final String GET_COUNTRY_BY_NAME_SQL = "select * from country where name = '";
-    private static final String GET_COUNTRY_BY_CODE_NAME_SQL = "select * from country where code_name = '";
+    private static final String GET_COUNTRY_BY_NAME_SQL = "select * from country where name = '%s'";
+    private static final String GET_COUNTRY_BY_CODE_NAME_SQL = "select * from country where code_name = '%s'";
     private static final String UPDATE_COUNTRY_NAME_SQL = "update country SET name='%s' where code_name='%s'";
 
     private static final RowMapper<Country> COUNTRY_ROW_MAPPER = (resultSet, rowNum) ->
@@ -72,18 +72,18 @@ public class SimpleCountryJdbcDao extends JdbcDaoSupport implements lab.dao.Coun
     @Override
     public Country getCountryByCodeName(String codeName) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate();
-
-        String sql = GET_COUNTRY_BY_CODE_NAME_SQL + codeName + "'";
 //		System.out.println(sql);
 
-        return jdbcTemplate.query(sql, COUNTRY_ROW_MAPPER).get(0);
+        return jdbcTemplate.query(String.format(GET_COUNTRY_BY_CODE_NAME_SQL, codeName),
+                COUNTRY_ROW_MAPPER)
+                .get(0);
     }
 
     @Override
     public Country getCountryByName(String name) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate();
-        List<Country> countryList = jdbcTemplate.query(GET_COUNTRY_BY_NAME_SQL
-                + name + "'", COUNTRY_ROW_MAPPER);
+        List<Country> countryList = jdbcTemplate.query(String.format(GET_COUNTRY_BY_NAME_SQL, name),
+                COUNTRY_ROW_MAPPER);
         if (countryList.isEmpty()) {
             return null;
         }
